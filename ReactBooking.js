@@ -14,17 +14,19 @@ injectTapEventPlugin();
 
 const Row = ({...props})=>{
 
-   const {styleRow, numCols, onTouchDown, oldShift, style, shift, slide,  onMouseDown} = props;
+   const {row, styleRow, numCols, onTouchDown, oldShift, style, shift, slide,  onMouseDown} = props;
 
 
    const list= [...Array(numCols)].map((element,index)=>{
        let my_style = {
            ...style,
            left: oldShift + (style.width + style.margin)*(index) + shift,
-           position: 'absolute'
+           position: 'absolute',
+           cursor:'pointer'
        }
        return(
               <Paper
+                 id={`r${row}c${index}`}
                  key={index}
                  style={my_style}
                  onMouseDown={onMouseDown}
@@ -95,6 +97,7 @@ class ReactBooking extends React.Component {
     mouseDown(ev){
         ev.persist();
         ev.preventDefault();
+        console.log(ev.target.id)
         console.log('mousedown')
         this.setState(
             {
@@ -199,6 +202,7 @@ class ReactBooking extends React.Component {
                 top: index*210
             }
                 return(<Row
+                    row={index}
                     key={index}
                     styleRow={styleRow}
                     slide={this.button_slide.bind(this)}
