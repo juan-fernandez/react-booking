@@ -83,6 +83,7 @@ class ReactBooking extends React.Component {
     }
     mouseDown(ev){
         ev.persist();
+        ev.preventDefault();
         console.log('mousedown')
         this.setState(
             {
@@ -93,6 +94,7 @@ class ReactBooking extends React.Component {
     }
     mouseUp(ev){
         console.log('mouseup')
+        ev.preventDefault();
         let old = this.state.shift;
         this.setState(
             {
@@ -110,6 +112,7 @@ class ReactBooking extends React.Component {
 
     }
     mouseMove(ev){
+        ev.preventDefault();
         if(this.state.sliding){
             let shift = ev.clientX-this.state.clicked_x;
             this.setState({
@@ -119,6 +122,7 @@ class ReactBooking extends React.Component {
     }
     manager(ev){
         ev.persist();
+        ev.preventDefault();
         this.mouseMove(ev);
     }
 
