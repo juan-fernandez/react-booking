@@ -14,13 +14,13 @@ injectTapEventPlugin();
 
 const Row = ({...props})=>{
 
-   const {numCols, style, shift, slide, mouseSlide, onMouseDown, onMouseMove} = props;
+   const {numCols, oldShift, style, shift, slide, mouseSlide, onMouseDown} = props;
 
 
    const list= [...Array(numCols)].map((element,index)=>{
        let my_style = {
            ...style,
-           left: (style.width + style.margin)*(index) + shift,
+           left: oldShift + (style.width + style.margin)*(index) + shift,
            position: 'absolute'
        }
        return(
@@ -28,7 +28,7 @@ const Row = ({...props})=>{
                  key={index}
                  style={my_style}
                  onMouseDown={onMouseDown}
-                 onMouseMove = {!onMouseMove ? undefined:onMouseMove}
+
               />
         )
     })
@@ -40,7 +40,9 @@ const Row = ({...props})=>{
 
     }
     return (
-        <div style={{position:'relative'}}>
+        <div
+
+            style={{position:'relative'}}>
             <RaisedButton
                 onTouchTap={()=>{slide(-1)}}
                 style={button_style}
@@ -73,10 +75,11 @@ class ReactBooking extends React.Component {
             shift:0,
             clicked_x: null,
             sliding: false,
-            mousemove: null
+            oldShift: 0
         }
         this.mouseMove = throttle(100,this.mouseMove)
         window.addEventListener('mouseup',this.mouseUp.bind(this))
+        window.addEventListener('mousemove',this.mouseMove.bind(this))
     }
     mouseDown(ev){
         ev.persist();
@@ -90,10 +93,13 @@ class ReactBooking extends React.Component {
     }
     mouseUp(ev){
         console.log('mouseup')
+        let old = this.state.shift;
         this.setState(
             {
                 sliding:false,
-                clicked_x: null
+                clicked_x: null,
+                oldShift: this.state.oldShift + old,
+                shift: 0
             }
         )
     }
@@ -104,12 +110,12 @@ class ReactBooking extends React.Component {
 
     }
     mouseMove(ev){
-        ev.persist();
-        console.log('throttled')
-        let shift = ev.clientX-this.state.clicked_x;
-        this.setState({
-            shift
-        })
+        if(this.state.sliding){
+            let shift = ev.clientX-this.state.clicked_x;
+            this.setState({
+                shift
+            })
+        }
     }
     manager(ev){
         ev.persist();
@@ -132,8 +138,8 @@ class ReactBooking extends React.Component {
                         zDepth={zDepth}
                         mouseSlide = {this.mouseSlide.bind(this)}
                         onMouseDown = {this.mouseDown.bind(this)}
+                        oldShift ={this.state.oldShift}
 
-                        onMouseMove = {sliding ? this.manager.bind(this):null}
                     />
                 </div>
             </MuiThemeProvider>
