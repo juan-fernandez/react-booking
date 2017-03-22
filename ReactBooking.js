@@ -14,7 +14,7 @@ injectTapEventPlugin();
 
 const Row = ({...props})=>{
 
-   const {numCols, onTouchDown, oldShift, style, shift, slide, mouseSlide, onMouseDown} = props;
+   const {styleRow, numCols, onTouchDown, oldShift, style, shift, slide,  onMouseDown} = props;
 
 
    const list= [...Array(numCols)].map((element,index)=>{
@@ -36,8 +36,8 @@ const Row = ({...props})=>{
         width:50,
         height:50,
         position: 'absolute',
-        top:75
-
+        top:75,
+        left:10
     }
     return (
         <div
@@ -45,18 +45,19 @@ const Row = ({...props})=>{
                 {
                     display:'flex',
                     width:'100%',
+                    ...styleRow
                 }
             }>
             <RaisedButton
-                onTouchTap={()=>{slide(-1)}}
+                onTouchTap={(ev)=>{slide(ev,-1)}}
                 style={button_style}
                 label='Left'
                 primary={true}
             />
             {list}
             <RaisedButton
-                onTouchTap={()=>{slide(1)}}
-                style={{...button_style,left:numCols*200}}
+                onTouchTap={(ev)=>{slide(ev,1)}}
+                style={{...button_style,left:-50+numCols*200}}
                 label='Right'
                 primary={true}
             />
@@ -126,11 +127,12 @@ class ReactBooking extends React.Component {
             }
         )
     }
-    update_style(){
 
-    }
-    mouseSlide(){
-
+    button_slide(ev,direction){
+        ev.preventDefault();
+        this.setState({
+            oldShift: this.state.oldShift + direction*210
+        })
     }
     mouseMove(ev){
         ev.preventDefault();
@@ -168,18 +170,47 @@ class ReactBooking extends React.Component {
         console.log('mouseup')
         ev.preventDefault();
         let old = this.state.shift;
+        let min_ind = -1;
+        let min = this.state.grid.reduce((acc,val,index,grid)=>{
+            if(acc > Math.abs(val-(old+this.state.oldShift))){
+                acc = Math.abs(val-(old+this.state.oldShift))
+                min_ind = index;
+            }
+            return acc;
+        },5000)
+
+
+
         this.setState(
             {
                 sliding:false,
                 clicked_x: null,
-                oldShift: this.state.oldShift + old,
+                oldShift: this.state.grid[min_ind],
                 shift: 0
             }
         )
     }
     render(){
         const {style,shift,sliding} = this.state;
-        const {numCols,zDepth} = this.props;
+        const {numCols,zDepth,numRows} = this.props;
+        const list = [...Array(numRows)].map((el,index)=>{
+            const styleRow={
+                position:'absolute',
+                top: index*210
+            }
+                return(<Row
+                    key={index}
+                    styleRow={styleRow}
+                    slide={this.button_slide.bind(this)}
+                    style={this.state.style}
+                    shift={shift}
+                    numCols={numCols}
+                    zDepth={zDepth}
+                    onMouseDown = {this.mouseDown.bind(this)}
+                    oldShift ={this.state.oldShift}
+                    onTouchDown = {this.touchDown.bind(this)}
+                />)
+        })
 
         return(
             <MuiThemeProvider>
@@ -188,19 +219,10 @@ class ReactBooking extends React.Component {
                         display:'flex',
                         height:'500px',
                         width:`${210*4+10}px`,
-                        overflow:'hidden'
+                        overflowX:'hidden',
+                        overflowY:'scroll'
                     }}>
-                    <Row
-                        slide={this.update_style.bind(this)}
-                        style={this.state.style}
-                        shift={shift}
-                        numCols={numCols}
-                        zDepth={zDepth}
-                        mouseSlide = {this.mouseSlide.bind(this)}
-                        onMouseDown = {this.mouseDown.bind(this)}
-                        oldShift ={this.state.oldShift}
-                        onTouchDown = {this.touchDown.bind(this)}
-                    />
+                    {list}
                 </div>
             </MuiThemeProvider>
         )
@@ -217,6 +239,7 @@ const app = document.getElementById('app')
 ReactDOM.render(
    <ReactBooking
       numCols={4}
+      numRows={5}
       zDepth={3}
    />,
 app);
