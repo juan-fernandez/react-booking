@@ -41,8 +41,12 @@ const Row = ({...props})=>{
     }
     return (
         <div
-
-            style={{position:'relative'}}>
+            style={
+                {
+                    display:'flex',
+                    width:'100%',
+                }
+            }>
             <RaisedButton
                 onTouchTap={()=>{slide(-1)}}
                 style={button_style}
@@ -75,7 +79,10 @@ class ReactBooking extends React.Component {
             shift:0,
             clicked_x: null,
             sliding: false,
-            oldShift: 0
+            oldShift: 0,
+            grid: [...Array(props.numCols)].map((el,index)=>(
+                index*(210)
+            ))
         }
         this.mouseMove = throttle(100,this.mouseMove)
         this.touchMove = throttle(100,this.touchMove)
@@ -99,11 +106,22 @@ class ReactBooking extends React.Component {
         console.log('mouseup')
         ev.preventDefault();
         let old = this.state.shift;
+        let min_ind = -1;
+        let min = this.state.grid.reduce((acc,val,index,grid)=>{
+            if(acc > Math.abs(val-(old+this.state.oldShift))){
+                acc = Math.abs(val-(old+this.state.oldShift))
+                min_ind = index;
+            }
+            return acc;
+        },5000)
+
+
+
         this.setState(
             {
                 sliding:false,
                 clicked_x: null,
-                oldShift: this.state.oldShift + old,
+                oldShift: this.state.grid[min_ind],
                 shift: 0
             }
         )
@@ -165,7 +183,13 @@ class ReactBooking extends React.Component {
 
         return(
             <MuiThemeProvider>
-                <div>
+                <div style={{
+                        position:'relative',
+                        display:'flex',
+                        height:'500px',
+                        width:`${210*4+10}px`,
+                        overflow:'hidden'
+                    }}>
                     <Row
                         slide={this.update_style.bind(this)}
                         style={this.state.style}
