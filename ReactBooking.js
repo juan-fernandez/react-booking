@@ -14,7 +14,7 @@ injectTapEventPlugin();
 
 const Row = ({...props})=>{
 
-   const {numCols, oldShift, style, shift, slide, mouseSlide, onMouseDown} = props;
+   const {numCols, onTouchDown, oldShift, style, shift, slide, mouseSlide, onMouseDown} = props;
 
 
    const list= [...Array(numCols)].map((element,index)=>{
@@ -28,7 +28,7 @@ const Row = ({...props})=>{
                  key={index}
                  style={my_style}
                  onMouseDown={onMouseDown}
-
+                 onTouchStart={onTouchDown}
               />
         )
     })
@@ -78,8 +78,11 @@ class ReactBooking extends React.Component {
             oldShift: 0
         }
         this.mouseMove = throttle(100,this.mouseMove)
+        this.touchMove = throttle(100,this.touchMove)
         window.addEventListener('mouseup',this.mouseUp.bind(this))
         window.addEventListener('mousemove',this.mouseMove.bind(this))
+        window.addEventListener('touchmove',this.touchMove.bind(this))
+        window.addEventListener('touchend',this.touchEnd.bind(this))
     }
     mouseDown(ev){
         ev.persist();
@@ -125,8 +128,37 @@ class ReactBooking extends React.Component {
         ev.preventDefault();
         this.mouseMove(ev);
     }
-
-
+    touchMove(ev){
+        console.log('touchmove',ev.changedTouches[0].clientX)
+        if(this.state.sliding){
+            let shift = ev.changedTouches[0].clientX-this.state.clicked_x;
+            this.setState({
+                shift
+            })
+        }
+    }
+    touchDown(ev){
+        console.log('touchdown',ev.changedTouches[0].clientX)
+        this.setState(
+            {
+                sliding:true,
+                clicked_x: ev.changedTouches[0].clientX
+            }
+        )
+    }
+    touchEnd(ev){
+        console.log('mouseup')
+        ev.preventDefault();
+        let old = this.state.shift;
+        this.setState(
+            {
+                sliding:false,
+                clicked_x: null,
+                oldShift: this.state.oldShift + old,
+                shift: 0
+            }
+        )
+    }
     render(){
         const {style,shift,sliding} = this.state;
         const {numCols,zDepth} = this.props;
@@ -143,7 +175,7 @@ class ReactBooking extends React.Component {
                         mouseSlide = {this.mouseSlide.bind(this)}
                         onMouseDown = {this.mouseDown.bind(this)}
                         oldShift ={this.state.oldShift}
-
+                        onTouchDown = {this.touchDown.bind(this)}
                     />
                 </div>
             </MuiThemeProvider>

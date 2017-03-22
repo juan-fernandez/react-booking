@@ -4,7 +4,7 @@
   "description": "booking planner in react",
   "main": "ReactBooking.js",
   "scripts": {
-    "dev": "webpack-dev-server --content-base --inline --hot",
+    "dev": "webpack-dev-server --content-base --inline --hot --host 192.168.2.121",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Juan Fernández",
@@ -24,11 +24,9 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-tap-event-plugin": "^2.0.1",
+    "throttle-debounce": "^1.0.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2"
   },
-  "dependencies": {
-    "lodash": "^4.17.4",
-    "throttle-debounce": "^1.0.1"
-  }
+  "dependencies": {}
 }
