@@ -5,80 +5,17 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import {throttle} from 'throttle-debounce'
+import Row from "./Row"
+import Header from "./Header"
 
 injectTapEventPlugin();
 
-
-
-
-
-const Row = ({...props})=>{
-
-   const {row, styleRow, numCols, onTouchDown, oldShift, style, shift, slide,  onMouseDown} = props;
-
-
-   const list= [...Array(numCols)].map((element,index)=>{
-       let my_style = {
-           ...style,
-           left: oldShift + (style.width + style.margin)*(index) + shift,
-           position: 'absolute',
-           cursor:'pointer'
-       }
-       return(
-              <Paper
-                 id={`r${row}c${index}`}
-                 key={index}
-                 style={my_style}
-                 onMouseDown={onMouseDown}
-                 onTouchStart={onTouchDown}
-              />
-        )
-    })
-    const button_style={
-        width:50,
-        height:50,
-        position: 'absolute',
-        top:75,
-        left:10
-    }
-    return (
-        <div
-            style={
-                {
-                    display:'flex',
-                    width:'100%',
-                    ...styleRow
-                }
-            }>
-            <RaisedButton
-                onTouchTap={(ev)=>{slide(ev,-1)}}
-                style={button_style}
-                label='Left'
-                primary={true}
-            />
-            {list}
-            <RaisedButton
-                onTouchTap={(ev)=>{slide(ev,1)}}
-                style={{...button_style,left:-50+numCols*200}}
-                label='Right'
-                primary={true}
-            />
-        </div>
-    )
-}
 
 class ReactBooking extends React.Component {
     constructor(props){
         super(props)
 
         this.state={
-            style:{
-                height: 200,
-                width: 200,
-                margin: 10,
-                textAlign: 'center',
-                display: 'inline-block',
-            },
             shift:0,
             clicked_x: null,
             sliding: false,
@@ -97,8 +34,6 @@ class ReactBooking extends React.Component {
     mouseDown(ev){
         ev.persist();
         ev.preventDefault();
-        console.log(ev.target.id)
-        console.log('mousedown')
         this.setState(
             {
                 sliding:true,
@@ -107,7 +42,6 @@ class ReactBooking extends React.Component {
         )
     }
     mouseUp(ev){
-        console.log('mouseup')
         ev.preventDefault();
         let old = this.state.shift;
         let min_ind = -1;
@@ -117,9 +51,7 @@ class ReactBooking extends React.Component {
                 min_ind = index;
             }
             return acc;
-        },5000)
-
-
+        },Infinity)
 
         this.setState(
             {
@@ -146,13 +78,8 @@ class ReactBooking extends React.Component {
             })
         }
     }
-    manager(ev){
-        ev.persist();
-        ev.preventDefault();
-        this.mouseMove(ev);
-    }
+
     touchMove(ev){
-        console.log('touchmove',ev.changedTouches[0].clientX)
         if(this.state.sliding){
             let shift = ev.changedTouches[0].clientX-this.state.clicked_x;
             this.setState({
@@ -161,7 +88,6 @@ class ReactBooking extends React.Component {
         }
     }
     touchDown(ev){
-        console.log('touchdown',ev.changedTouches[0].clientX)
         this.setState(
             {
                 sliding:true,
@@ -170,7 +96,6 @@ class ReactBooking extends React.Component {
         )
     }
     touchEnd(ev){
-        console.log('mouseup')
         ev.preventDefault();
         let old = this.state.shift;
         let min_ind = -1;
@@ -180,10 +105,7 @@ class ReactBooking extends React.Component {
                 min_ind = index;
             }
             return acc;
-        },5000)
-
-
-
+        },Infinity)
         this.setState(
             {
                 sliding:false,
@@ -195,37 +117,52 @@ class ReactBooking extends React.Component {
     }
     render(){
         const {style,shift,sliding} = this.state;
-        const {numCols,zDepth,numRows} = this.props;
-        const list = [...Array(numRows)].map((el,index)=>{
-            const styleRow={
+        const {
+            bookingStyle,
+            cellStyle,
+            buttonStyle,
+            headerStyle,
+            numCols,
+            numRows,
+            zDepth,
+            cellComponent,
+            buttonComponent
+        } = this.props;
+
+        const list = [...Array(numRows)].map((el,rowIndex)=>{
+            const rowPosition={
                 position:'absolute',
-                top: index*210
+                top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin)
             }
-                return(<Row
-                    row={index}
-                    key={index}
-                    styleRow={styleRow}
-                    slide={this.button_slide.bind(this)}
-                    style={this.state.style}
+            return(
+                <Row
+                    buttonComponent={buttonComponent}
+                    cellComponent={cellComponent}
+                    cellStyle={cellStyle}
+                    buttonStyle={buttonStyle}
+                    rowIndex={rowIndex}
+                    rowPosition={rowPosition}
+                    key={rowIndex}
+
                     shift={shift}
                     numCols={numCols}
                     zDepth={zDepth}
                     onMouseDown = {this.mouseDown.bind(this)}
                     oldShift ={this.state.oldShift}
                     onTouchDown = {this.touchDown.bind(this)}
-                />)
+                />
+            )
         })
 
         return(
             <MuiThemeProvider>
-                <div style={{
-                        position:'relative',
-                        display:'flex',
-                        height:'500px',
-                        width:`${210*4+10}px`,
-                        overflowX:'hidden',
-                        overflowY:'scroll'
-                    }}>
+                <div style={bookingStyle}>
+                    <Header
+                        headerStyle={headerStyle}
+                        buttonComponent={buttonComponent}
+                        buttonStyle={buttonStyle}
+                        slide={this.button_slide.bind(this)}
+                    />
                     {list}
                 </div>
             </MuiThemeProvider>
@@ -234,16 +171,48 @@ class ReactBooking extends React.Component {
 
 
 }
+const BOOKING_WIDTH=1000;
+const BOOKING_HEIGHT=500;
 
-
+const booking_style={
+    position:'relative',
+    display:'flex',
+    height:BOOKING_HEIGHT,
+    width:BOOKING_WIDTH,
+    overflowX:'hidden',
+    overflowY:'scroll'
+}
+const cell_style={
+    height: 200,
+    width: 200,
+    margin: 10,
+    textAlign: 'center',
+    display: 'inline-block',
+}
+const button_style={
+    position: 'absolute',
+    width:50,
+    height:50
+}
+const header_style={
+    width:BOOKING_WIDTH,
+    height: 100,
+}
 
 const app = document.getElementById('app')
 
 
 ReactDOM.render(
-   <ReactBooking
-      numCols={4}
-      numRows={5}
-      zDepth={3}
-   />,
+    <ReactBooking
+        bookingStyle={booking_style}
+        cellComponent={({...props})=><Paper {...props}/>}
+        buttonComponent={({...props})=><RaisedButton {...props}/>}
+        cellStyle={cell_style}
+        buttonStyle={button_style}
+        headerStyle={header_style}
+        numCols={4}
+        numRows={5}
+        zDepth={3}
+
+    />,
 app);
