@@ -14,14 +14,14 @@ export default ({...props})=>{
         >
         {buttonComponent(
         {
-            onTouchTap:(ev)=> slide(ev,-1),
+            onTouchTap:(ev)=> slide(ev,1),
             buttonStyle:{...buttonStyle, left:0},
             icon:<Left/>,
             primary:true
         })}
         {buttonComponent(
         {
-            onTouchTap:(ev)=> slide(ev,1),
+            onTouchTap:(ev)=> slide(ev,-1),
             buttonStyle:{...buttonStyle, left:`${headerStyle.width-1.5*buttonStyle.width}px`},
             icon:<Right/>,
             primary:true

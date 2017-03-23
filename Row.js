@@ -29,8 +29,7 @@ export default ({...props})=>{
                   id:`r${rowIndex}c${index}`,
                   key:index,
                   style:positioned_cell_style,
-                  onMouseDown:onMouseDown,
-                  onTouchStart:onTouchDown
+
               })
         )
     })
@@ -40,6 +39,8 @@ export default ({...props})=>{
     }
     return (
         <div
+            onMouseDown={onMouseDown}
+            onTouchStart={onTouchDown}
             style={
                 {
                     display:'flex',

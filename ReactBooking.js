@@ -43,6 +43,7 @@ class ReactBooking extends React.Component {
     }
     mouseUp(ev){
         ev.preventDefault();
+        console.log("mouseup",this.state)
         let old = this.state.shift;
         let min_ind = -1;
         let min = this.state.grid.reduce((acc,val,index,grid)=>{
@@ -65,8 +66,9 @@ class ReactBooking extends React.Component {
 
     button_slide(ev,direction){
         ev.preventDefault();
+        console.log("button slide")
         this.setState({
-            oldShift: this.state.oldShift + direction*210
+            oldShift: this.state.oldShift + direction*(this.props.cellStyle.width)
         })
     }
     mouseMove(ev){
@@ -132,6 +134,7 @@ class ReactBooking extends React.Component {
         const rowList = [...Array(numRows)].map((el,rowIndex)=>{
             const rowPosition={
                 position:'absolute',
+                height:cellStyle.height+cellStyle.margin,
                 top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin)
             }
             return(
@@ -184,7 +187,7 @@ const booking_style={
 }
 const cell_style={
     height: 80,
-    width: 300,
+    width: 80,
     margin: 10,
     textAlign: 'center',
     display: 'inline-block',
@@ -210,7 +213,7 @@ ReactDOM.render(
         cellStyle={cell_style}
         buttonStyle={button_style}
         headerStyle={header_style}
-        numCols={4}
+        numCols={15}
         numRows={5}
         zDepth={3}
 
