@@ -14,14 +14,14 @@ injectTapEventPlugin();
 class ReactBooking extends React.Component {
     constructor(props){
         super(props)
-
+        const {numCols,cellStyle} = props
         this.state={
             shift:0,
             clicked_x: null,
             sliding: false,
             oldShift: 0,
-            grid: [...Array(props.numCols)].map((el,index)=>(
-                index*(210)
+            grid: [...Array(2*numCols-1)].map((el,index)=>(
+                (index-(numCols-1))*(cellStyle.width+cellStyle.margin)
             ))
         }
         this.mouseMove = throttle(100,this.mouseMove)
@@ -129,7 +129,7 @@ class ReactBooking extends React.Component {
             buttonComponent
         } = this.props;
 
-        const list = [...Array(numRows)].map((el,rowIndex)=>{
+        const rowList = [...Array(numRows)].map((el,rowIndex)=>{
             const rowPosition={
                 position:'absolute',
                 top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin)
@@ -163,7 +163,7 @@ class ReactBooking extends React.Component {
                         buttonStyle={buttonStyle}
                         slide={this.button_slide.bind(this)}
                     />
-                    {list}
+                    {rowList}
                 </div>
             </MuiThemeProvider>
         )
@@ -183,8 +183,8 @@ const booking_style={
     overflowY:'scroll'
 }
 const cell_style={
-    height: 200,
-    width: 200,
+    height: 80,
+    width: 300,
     margin: 10,
     textAlign: 'center',
     display: 'inline-block',
