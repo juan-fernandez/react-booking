@@ -7,6 +7,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {throttle} from 'throttle-debounce'
 import Row from "./Row"
 import Header from "./Header"
+import moment from 'moment'
+import twix from 'twix'
 
 injectTapEventPlugin();
 
@@ -43,7 +45,7 @@ class ReactBooking extends React.Component {
     }
     mouseUp(ev){
         ev.preventDefault();
-        console.log("mouseup",this.state)
+
         let old = this.state.shift;
         let min_ind = -1;
         let min = this.state.grid.reduce((acc,val,index,grid)=>{
@@ -66,7 +68,7 @@ class ReactBooking extends React.Component {
 
     button_slide(ev,direction){
         ev.preventDefault();
-        console.log("button slide")
+
         this.setState({
             oldShift: this.state.oldShift + direction*(this.props.cellStyle.width)
         })
@@ -128,7 +130,8 @@ class ReactBooking extends React.Component {
             numRows,
             zDepth,
             cellComponent,
-            buttonComponent
+            buttonComponent,
+            dateRange
         } = this.props;
 
         const rowList = [...Array(numRows)].map((el,rowIndex)=>{
@@ -165,6 +168,10 @@ class ReactBooking extends React.Component {
                         buttonComponent={buttonComponent}
                         buttonStyle={buttonStyle}
                         slide={this.button_slide.bind(this)}
+                        dateRange={dateRange}
+                        shift={this.state.oldShift}
+                        lifeShift={this.state.shift}
+                        cellStyle={cellStyle}
                     />
                     {rowList}
                 </div>
@@ -202,8 +209,14 @@ const header_style={
     height: 100,
 }
 
+const date_range={
+
+}
+
 const app = document.getElementById('app')
 
+let start_range = moment('01-01-2017',"DD-MM-YYYY",'es');
+let end_range = moment('30-01-2017',"DD-MM-YYYY",'es');
 
 ReactDOM.render(
     <ReactBooking
@@ -216,6 +229,7 @@ ReactDOM.render(
         numCols={15}
         numRows={5}
         zDepth={3}
+        dateRange={start_range.twix(end_range)}
 
     />,
 app);

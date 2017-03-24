@@ -25,6 +25,7 @@ export default ({...props})=>{
            cursor:'pointer'
        }
        return(
+           
               cellComponent({
                   id:`r${rowIndex}c${index}`,
                   key:index,
