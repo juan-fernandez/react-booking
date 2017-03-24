@@ -1,14 +1,25 @@
 import React from 'react'
 import ReactDOM from "react-dom"
-import Paper from 'material-ui/Paper'
-import injectTapEventPlugin from 'react-tap-event-plugin';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
-import {throttle} from 'throttle-debounce'
+
+
+// internal components
 import Row from "./Row"
 import Header from "./Header"
+import Resources from "./Resources"
+
+// Date management
 import moment from 'moment'
 import twix from 'twix'
+
+// Not to overload
+import {throttle} from 'throttle-debounce'
+
+// material ui
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import Paper from 'material-ui/Paper'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
+
 
 injectTapEventPlugin();
 
@@ -131,14 +142,16 @@ class ReactBooking extends React.Component {
             zDepth,
             cellComponent,
             buttonComponent,
-            dateRange
+            dateRange,
+            menuStyle,
+            resources
         } = this.props;
 
         const rowList = [...Array(numRows)].map((el,rowIndex)=>{
             const rowPosition={
                 position:'absolute',
                 height:cellStyle.height+cellStyle.margin,
-                top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin)
+                top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin),
             }
             return(
                 <Row
@@ -162,19 +175,30 @@ class ReactBooking extends React.Component {
 
         return(
             <MuiThemeProvider>
-                <div style={bookingStyle}>
-                    <Header
-                        headerStyle={headerStyle}
-                        buttonComponent={buttonComponent}
-                        buttonStyle={buttonStyle}
-                        slide={this.button_slide.bind(this)}
-                        dateRange={dateRange}
-                        shift={this.state.oldShift}
-                        lifeShift={this.state.shift}
-                        cellStyle={cellStyle}
-                    />
-                    {rowList}
+                <div>
+                    <Resources
+                        resources={resources}
+                        style={menuStyle}
+                        height={cellStyle.height}
+                        margin={cellStyle.margin}
+                        />
+                    <div style={bookingStyle}>
+                        <Header
+                            headerStyle={headerStyle}
+                            buttonComponent={buttonComponent}
+                            buttonStyle={buttonStyle}
+                            slide={this.button_slide.bind(this)}
+                            dateRange={dateRange}
+                            shift={this.state.oldShift}
+                            lifeShift={this.state.shift}
+                            cellStyle={cellStyle}
+                        />
+
+                        {rowList}
+                    </div>
                 </div>
+
+
             </MuiThemeProvider>
         )
     }
@@ -184,14 +208,7 @@ class ReactBooking extends React.Component {
 const BOOKING_WIDTH=1000;
 const BOOKING_HEIGHT=500;
 
-const booking_style={
-    position:'relative',
-    display:'flex',
-    height:BOOKING_HEIGHT,
-    width:BOOKING_WIDTH,
-    overflowX:'hidden',
-    overflowY:'scroll'
-}
+
 const cell_style={
     height: 80,
     width: 80,
@@ -209,9 +226,28 @@ const header_style={
     height: 100,
 }
 
-const date_range={
-
+const menu_style={
+    position: 'fixed',
+    top: header_style.height+cell_style.margin,
+    left: 0,
+    width: 200,
+    margin: 10,
 }
+const booking_style={
+    position:'relative',
+    display:'flex',
+    height:BOOKING_HEIGHT,
+    width:BOOKING_WIDTH,
+    overflowX:'hidden',
+    overflowY:'scroll',
+    left: menu_style.width + menu_style.margin
+}
+
+const resources = [
+    'Sala Norte',
+    "Palacio de Congresos",
+    "Teatro"
+]
 
 const app = document.getElementById('app')
 
@@ -227,9 +263,10 @@ ReactDOM.render(
         buttonStyle={button_style}
         headerStyle={header_style}
         numCols={15}
-        numRows={5}
+        numRows={3}
         zDepth={3}
         dateRange={start_range.twix(end_range)}
-
+        menuStyle={menu_style}
+        resources={resources}
     />,
 app);
