@@ -3,9 +3,9 @@ import ReactDOM from "react-dom"
 
 
 // internal components
-import Row from "./Row"
-import Header from "./Header"
-import Resources from "./Resources"
+import DateRow from "./DateRow"
+import BookingHeader from "./BookingHeader"
+import BookingResources from "./BookingResources"
 
 // Date management
 import moment from 'moment'
@@ -20,6 +20,9 @@ import Paper from 'material-ui/Paper'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 
+// bootstrap grid
+import {Grid, Row, Col} from 'react-bootstrap'
+
 
 injectTapEventPlugin();
 
@@ -27,7 +30,9 @@ injectTapEventPlugin();
 class ReactBooking extends React.Component {
     constructor(props){
         super(props)
-        const {numCols,cellStyle} = props
+
+        const {dateRange,cellStyle,} = props
+        let numCols = dateRange.count('days');
         this.state={
             shift:0,
             clicked_x: null,
@@ -79,7 +84,7 @@ class ReactBooking extends React.Component {
 
     button_slide(ev,direction){
         ev.preventDefault();
-
+        console.log("slide",direction)
         this.setState({
             oldShift: this.state.oldShift + direction*(this.props.cellStyle.width)
         })
@@ -132,29 +137,26 @@ class ReactBooking extends React.Component {
     }
     render(){
         const {style,shift,sliding} = this.state;
+
         const {
-            bookingStyle,
             cellStyle,
             buttonStyle,
-            headerStyle,
-            numCols,
-            numRows,
             zDepth,
             cellComponent,
             buttonComponent,
             dateRange,
-            menuStyle,
             resources
         } = this.props;
 
-        const rowList = [...Array(numRows)].map((el,rowIndex)=>{
+        const rowList = [...Array(dateRange.length)].map((el,rowIndex)=>{
             const rowPosition={
                 position:'absolute',
                 height:cellStyle.height+cellStyle.margin,
-                top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin),
+                //top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin),
             }
             return(
-                <Row
+               null
+                /*<DateRow
                     buttonComponent={buttonComponent}
                     cellComponent={cellComponent}
                     cellStyle={cellStyle}
@@ -169,22 +171,16 @@ class ReactBooking extends React.Component {
                     onMouseDown = {this.mouseDown.bind(this)}
                     oldShift ={this.state.oldShift}
                     onTouchDown = {this.touchDown.bind(this)}
-                />
+                />*/
             )
         })
 
         return(
             <MuiThemeProvider>
-                <div>
-                    <Resources
-                        resources={resources}
-                        style={menuStyle}
-                        height={cellStyle.height}
-                        margin={cellStyle.margin}
-                        />
-                    <div style={bookingStyle}>
-                        <Header
-                            headerStyle={headerStyle}
+
+                  <Row style={{whiteSpace:'nowrap'}}>
+                     <Col style={{overflowX:'hidden',height:buttonStyle.height,padding:'0px'}} xs={10} sm={10} md={10} lg={10} xsOffset={2} smOffset={2} mdOffset={2} lgOffset={2}>
+                        <BookingHeader
                             buttonComponent={buttonComponent}
                             buttonStyle={buttonStyle}
                             slide={this.button_slide.bind(this)}
@@ -193,11 +189,24 @@ class ReactBooking extends React.Component {
                             lifeShift={this.state.shift}
                             cellStyle={cellStyle}
                         />
+                     </Col>
+                  </Row>
+                  {/*<Row>
 
+
+                     <Col xs={2} sm={2} md={2} lg={2}>
+                        <BookingResources
+                           resources={resources}
+                           style={menuStyle}
+                           height={cellStyle.height}
+                           margin={cellStyle.margin}
+                           />
+                     </Col>
+                     <Col xs={10} sm={10} md={10} lg={10}>
                         {rowList}
-                    </div>
-                </div>
+                     </Col>
 
+                  </Row>*/}
 
             </MuiThemeProvider>
         )
@@ -205,8 +214,6 @@ class ReactBooking extends React.Component {
 
 
 }
-const BOOKING_WIDTH=1000;
-const BOOKING_HEIGHT=500;
 
 
 const cell_style={
@@ -217,31 +224,11 @@ const cell_style={
     display: 'inline-block',
 }
 const button_style={
-    position: 'absolute',
     width:50,
-    height:50
-}
-const header_style={
-    width:BOOKING_WIDTH,
-    height: 100,
+    height:50,
+    display: 'inline-block',
 }
 
-const menu_style={
-    position: 'fixed',
-    top: header_style.height+cell_style.margin,
-    left: 0,
-    width: 200,
-    margin: 10,
-}
-const booking_style={
-    position:'relative',
-    display:'flex',
-    height:BOOKING_HEIGHT,
-    width:BOOKING_WIDTH,
-    overflowX:'hidden',
-    overflowY:'scroll',
-    left: menu_style.width + menu_style.margin
-}
 
 const resources = [
     'Sala Norte',
@@ -249,24 +236,27 @@ const resources = [
     "Teatro"
 ]
 
+const container_style = {
+   width: '80%',
+   height: '600px',
+   overflowX: 'hidden'
+}
+
 const app = document.getElementById('app')
 
 let start_range = moment('01-01-2017',"DD-MM-YYYY",'es');
 let end_range = moment('30-01-2017',"DD-MM-YYYY",'es');
 
 ReactDOM.render(
-    <ReactBooking
-        bookingStyle={booking_style}
-        cellComponent={({...props})=><Paper {...props}/>}
-        buttonComponent={({...props})=><RaisedButton {...props}/>}
-        cellStyle={cell_style}
-        buttonStyle={button_style}
-        headerStyle={header_style}
-        numCols={15}
-        numRows={3}
-        zDepth={3}
-        dateRange={start_range.twix(end_range)}
-        menuStyle={menu_style}
-        resources={resources}
-    />,
+   <Grid style={container_style}>
+       <ReactBooking
+           cellComponent={({...props})=><Paper {...props}/>}
+           buttonComponent={({...props})=><RaisedButton {...props}/>}
+           cellStyle={cell_style}
+           buttonStyle={button_style}
+           zDepth={3}
+           dateRange={start_range.twix(end_range)}
+           resources={resources}
+       />
+    </Grid>,
 app);

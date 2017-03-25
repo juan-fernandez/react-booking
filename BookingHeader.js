@@ -6,14 +6,13 @@ import Right from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 
 
 const Date = ({...props})=>{
-    const {height,width,left,date} = props;
+    const {height,width,date} = props;
     const date_style={
         display:'inline-block',
-        position: 'absolute',
-        top:15,
         height,
         width,
-        left
+        lineHeight:`${height}px`,
+        float:'none !important'
     }
     return(
         <Paper
@@ -26,7 +25,8 @@ const Date = ({...props})=>{
 }
 
 export default ({...props})=>{
-    const {headerStyle,
+
+    const {
         buttonComponent,
         buttonStyle,
         slide,
@@ -45,34 +45,40 @@ export default ({...props})=>{
                 key={index}
                 height={buttonStyle.height}
                 width={cellStyle.width}
-                left={cellStyle.margin+(cellStyle.width+cellStyle.margin)*index+shift+lifeShift}
                 date={iterate.next()}
             />
         )
     })
 
+   const header_style={
 
-
+   }
+   const my_button ={
+      float:'right'
+   }
     return(
-        <Paper
-            style={headerStyle}
+        <div
+            style={header_style}
         >
             {buttonComponent(
             {
                 onTouchTap:(ev)=> slide(ev,1),
-                buttonStyle:{...buttonStyle, left:0},
+                style:{...buttonStyle},
                 icon:<Left/>,
                 primary:true
             })}
-            {dateList}
+            <div style={{display:'inline-block',position:'absolute',left:shift}}>
+               {dateList}
+            </div>
+
             {buttonComponent(
             {
                 onTouchTap:(ev)=> slide(ev,-1),
-                buttonStyle:{...buttonStyle, left:`${headerStyle.width-1.5*buttonStyle.width}px`},
+                style:{...buttonStyle,...my_button},
                 icon:<Right/>,
                 primary:true
             })}
-        </Paper>
+        </div>
     )
 
 }
