@@ -68,7 +68,7 @@ export default ({...props})=>{
                 icon:<Left/>,
                 primary:true
             })}
-            <div style={{display:'inline-block',position:'absolute',left:shift}}>
+            <div style={{display:'inline-block',position:'absolute',left:shift+lifeShift}}>
                {dateList}
             </div>
 

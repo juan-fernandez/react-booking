@@ -147,31 +147,24 @@ class ReactBooking extends React.Component {
             dateRange,
             resources
         } = this.props;
+        let numDays = dateRange.count('days')
+        let numRes = resources.length;
+        numRes = 1;
+        const rowList = [...Array(numRes)].map((el,rowIndex)=>{
 
-        const rowList = [...Array(dateRange.length)].map((el,rowIndex)=>{
-            const rowPosition={
-                position:'absolute',
-                height:cellStyle.height+cellStyle.margin,
-                //top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin),
-            }
             return(
-               null
-                /*<DateRow
-                    buttonComponent={buttonComponent}
+               <DateRow
                     cellComponent={cellComponent}
                     cellStyle={cellStyle}
-                    buttonStyle={buttonStyle}
                     rowIndex={rowIndex}
-                    rowPosition={rowPosition}
                     key={rowIndex}
-
                     shift={shift}
-                    numCols={numCols}
+                    numDays={numDays}
                     zDepth={zDepth}
                     onMouseDown = {this.mouseDown.bind(this)}
                     oldShift ={this.state.oldShift}
                     onTouchDown = {this.touchDown.bind(this)}
-                />*/
+                />
             )
         })
 
@@ -191,8 +184,7 @@ class ReactBooking extends React.Component {
                         />
                      </Col>
                   </Row>
-                  <Row>
-
+                  <Row style={{whiteSpace:'nowrap'}}>
 
                      <Col xs={4} sm={3} md={2} lg={2}>
                         <BookingResources
@@ -200,11 +192,11 @@ class ReactBooking extends React.Component {
                            itemStyle={cellStyle}
                            />
                      </Col>
-                     {/*
-                     <Col xs={10} sm={10} md={10} lg={10}>
+
+                     <Col style={{overflowX:'hidden',height:`${(cellStyle.height+cellStyle.margin)*numRes}px`,padding:'0px'}} xs={10} sm={10} md={10} lg={10}>
                         {rowList}
                      </Col>
-                     */}
+
                   </Row>
                </Grid>
             </MuiThemeProvider>
@@ -232,7 +224,13 @@ const button_style={
 const resources = [
     'Sala Norte',
     "Palacio de Congresos",
-    "Teatro"
+    "Teatro",
+    'Sala Sur',
+    "Sala de comunicación",
+    "Aula Magna",
+     'Sala Oeste',
+     "Cabinete",
+     "Exterior",
 ]
 
 const container_style = {
@@ -244,18 +242,16 @@ const container_style = {
 const app = document.getElementById('app')
 
 let start_range = moment('01-01-2017',"DD-MM-YYYY",'es');
-let end_range = moment('30-01-2017',"DD-MM-YYYY",'es');
+let end_range = moment('15-01-2017',"DD-MM-YYYY",'es');
 
 ReactDOM.render(
-
-       <ReactBooking
-           cellComponent={({...props})=><Paper {...props}/>}
-           buttonComponent={({...props})=><RaisedButton {...props}/>}
-           cellStyle={cell_style}
-           buttonStyle={button_style}
-           zDepth={3}
-           dateRange={start_range.twix(end_range)}
-           resources={resources}
-       />
-,
+    <ReactBooking
+        cellComponent={({...props})=><Paper {...props}/>}
+        buttonComponent={({...props})=><RaisedButton {...props}/>}
+        cellStyle={cell_style}
+        buttonStyle={button_style}
+        zDepth={3}
+        dateRange={start_range.twix(end_range)}
+        resources={resources}
+    />,
 app);
