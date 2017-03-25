@@ -4,7 +4,7 @@
   "description": "booking planner in react",
   "main": "ReactBooking.js",
   "scripts": {
-    "dev": "webpack-dev-server --content-base --inline --hot --host 192.168.2.121",
+    "dev": "webpack-dev-server --content-base --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Juan Fernández",
