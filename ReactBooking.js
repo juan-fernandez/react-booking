@@ -86,7 +86,7 @@ class ReactBooking extends React.Component {
         ev.preventDefault();
         console.log("slide",direction)
         this.setState({
-            oldShift: this.state.oldShift + direction*(this.props.cellStyle.width)
+            oldShift: this.state.oldShift + direction*(this.props.cellStyle.width+2*this.props.cellStyle.margin)
         })
     }
     mouseMove(ev){

@@ -6,13 +6,13 @@ import Right from 'material-ui/svg-icons/hardware/keyboard-arrow-right';
 
 
 const Date = ({...props})=>{
-    const {height,width,date} = props;
+    const {height,width,date, margin} = props;
     const date_style={
         display:'inline-block',
         height,
         width,
+        margin:`0 ${margin}px`,
         lineHeight:`${height}px`,
-        float:'none !important'
     }
     return(
         <Paper
@@ -45,6 +45,7 @@ export default ({...props})=>{
                 key={index}
                 height={buttonStyle.height}
                 width={cellStyle.width}
+                margin={cellStyle.margin}
                 date={iterate.next()}
             />
         )
