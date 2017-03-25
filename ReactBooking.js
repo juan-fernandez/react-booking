@@ -193,7 +193,7 @@ class ReactBooking extends React.Component {
                            />
                      </Col>
 
-                     <Col style={{overflowX:'hidden',height:`${(cellStyle.height+cellStyle.margin)*numRes}px`,padding:'0px'}} xs={10} sm={10} md={10} lg={10}>
+                     <Col style={{overflow:'hidden',height:`${(cellStyle.height+2*cellStyle.margin)*numRes}px`,padding:'0px'}} xs={8} sm={9} md={10} lg={10}>
                         {rowList}
                      </Col>
 

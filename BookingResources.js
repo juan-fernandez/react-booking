@@ -6,6 +6,7 @@ export default ({...props})=>{
     const paper_style={
         width: '100%',
         height: itemStyle.height,
+        margin: itemStyle.margin
     }
 
     const listItems = resources.map((element,index)=>(
