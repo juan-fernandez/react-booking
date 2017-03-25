@@ -2,13 +2,10 @@ import React from 'react'
 import Paper from 'material-ui/Paper';
 
 export default ({...props})=>{
-    const {resources, style, height ,margin} = props;
+    const {resources, itemStyle} = props;
     const paper_style={
-        display: 'inline-block',
-        width: style.width,
-        height,
-        marginBottom: margin,
-        textAlign:'center',
+        width: '100%',
+        height: itemStyle.height,
     }
 
     const listItems = resources.map((element,index)=>(
@@ -20,7 +17,7 @@ export default ({...props})=>{
         </Paper>
     ))
     return(
-        <div style={style}>
+        <div>
             {listItems}
         </div>
     )

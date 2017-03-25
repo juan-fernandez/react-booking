@@ -177,9 +177,9 @@ class ReactBooking extends React.Component {
 
         return(
             <MuiThemeProvider>
-
+               <Grid style={container_style}>
                   <Row style={{whiteSpace:'nowrap'}}>
-                     <Col style={{overflowX:'hidden',height:buttonStyle.height,padding:'0px'}} xs={10} sm={10} md={10} lg={10} xsOffset={2} smOffset={2} mdOffset={2} lgOffset={2}>
+                     <Col style={{overflowX:'hidden',height:buttonStyle.height,padding:'0px'}} xs={8} sm={9} md={10} lg={10} xsOffset={4} smOffset={3} mdOffset={2} lgOffset={2}>
                         <BookingHeader
                             buttonComponent={buttonComponent}
                             buttonStyle={buttonStyle}
@@ -191,23 +191,22 @@ class ReactBooking extends React.Component {
                         />
                      </Col>
                   </Row>
-                  {/*<Row>
+                  <Row>
 
 
-                     <Col xs={2} sm={2} md={2} lg={2}>
+                     <Col xs={4} sm={3} md={2} lg={2}>
                         <BookingResources
                            resources={resources}
-                           style={menuStyle}
-                           height={cellStyle.height}
-                           margin={cellStyle.margin}
+                           itemStyle={cellStyle}
                            />
                      </Col>
+                     {/*
                      <Col xs={10} sm={10} md={10} lg={10}>
                         {rowList}
                      </Col>
-
-                  </Row>*/}
-
+                     */}
+                  </Row>
+               </Grid>
             </MuiThemeProvider>
         )
     }
@@ -248,7 +247,7 @@ let start_range = moment('01-01-2017',"DD-MM-YYYY",'es');
 let end_range = moment('30-01-2017',"DD-MM-YYYY",'es');
 
 ReactDOM.render(
-   <Grid style={container_style}>
+
        <ReactBooking
            cellComponent={({...props})=><Paper {...props}/>}
            buttonComponent={({...props})=><RaisedButton {...props}/>}
@@ -258,5 +257,5 @@ ReactDOM.render(
            dateRange={start_range.twix(end_range)}
            resources={resources}
        />
-    </Grid>,
+,
 app);
