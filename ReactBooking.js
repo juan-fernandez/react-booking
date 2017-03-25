@@ -40,7 +40,8 @@ class ReactBooking extends React.Component {
             oldShift: 0,
             grid: [...Array(2*numCols-1)].map((el,index)=>(
                 (index-(numCols-1))*(cellStyle.width+cellStyle.margin)
-            ))
+            )),
+            selected:[]
         }
         this.mouseMove = throttle(100,this.mouseMove)
         this.touchMove = throttle(100,this.touchMove)
@@ -84,7 +85,6 @@ class ReactBooking extends React.Component {
 
     button_slide(ev,direction){
         ev.preventDefault();
-        console.log("slide",direction)
         this.setState({
             oldShift: this.state.oldShift + direction*(this.props.cellStyle.width+2*this.props.cellStyle.margin)
         })
@@ -135,6 +135,19 @@ class ReactBooking extends React.Component {
             }
         )
     }
+   select_date(ev){
+
+      let index = this.state.selected.indexOf(ev.target.id);
+      if(index != -1){
+         this.setState({
+            selected: this.state.selected.filter(element=>element!=ev.target.id)
+         })
+      }else{
+         this.setState({
+            selected: [...this.state.selected,ev.target.id]
+         })
+      }
+   }
     render(){
         const {style,shift,sliding} = this.state;
 
@@ -164,6 +177,8 @@ class ReactBooking extends React.Component {
                     onMouseDown = {this.mouseDown.bind(this)}
                     oldShift ={this.state.oldShift}
                     onTouchDown = {this.touchDown.bind(this)}
+                    onDoubleClick= {this.select_date.bind(this)}
+                    selected={this.state.selected}
                 />
             )
         })
