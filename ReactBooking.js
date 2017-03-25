@@ -186,7 +186,7 @@ class ReactBooking extends React.Component {
         return(
             <MuiThemeProvider>
                <div>
-                  <Row style={{whiteSpace:'nowrap'}}>
+                  <Row style={{whiteSpace:'nowrap',overflowX:'hidden'}}>
                      <Col style={{overflowX:'hidden',height:buttonStyle.height,padding:'0px'}} xs={8} sm={9} md={10} lg={10} xsOffset={4} smOffset={3} mdOffset={2} lgOffset={2}>
                         <BookingHeader
                             buttonComponent={buttonComponent}
@@ -279,6 +279,8 @@ ReactDOM.render(
       <Row style={{height:'50px'}}>
          Extra elements
       </Row>
+
+
    </Grid>
 
 ,app);
