@@ -1,90 +1,40 @@
 import React from 'react'
 import ReactDOM from "react-dom"
-import Paper from 'material-ui/Paper'
+
+
+// internal components
+import Row from "./Row"
+import Header from "./Header"
+import Resources from "./Resources"
+
+// Date management
+import moment from 'moment'
+import twix from 'twix'
+
+// Not to overload
+import {throttle} from 'throttle-debounce'
+
+// material ui
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import Paper from 'material-ui/Paper'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
-import {throttle} from 'throttle-debounce'
+
 
 injectTapEventPlugin();
 
 
-
-
-
-const Row = ({...props})=>{
-
-   const {row, styleRow, numCols, onTouchDown, oldShift, style, shift, slide,  onMouseDown} = props;
-
-
-   const list= [...Array(numCols)].map((element,index)=>{
-       let my_style = {
-           ...style,
-           left: oldShift + (style.width + style.margin)*(index) + shift,
-           position: 'absolute',
-           cursor:'pointer'
-       }
-       return(
-              <Paper
-                 id={`r${row}c${index}`}
-                 key={index}
-                 style={my_style}
-                 onMouseDown={onMouseDown}
-                 onTouchStart={onTouchDown}
-              />
-        )
-    })
-    const button_style={
-        width:50,
-        height:50,
-        position: 'absolute',
-        top:75,
-        left:10
-    }
-    return (
-        <div
-            style={
-                {
-                    display:'flex',
-                    width:'100%',
-                    ...styleRow
-                }
-            }>
-            <RaisedButton
-                onTouchTap={(ev)=>{slide(ev,-1)}}
-                style={button_style}
-                label='Left'
-                primary={true}
-            />
-            {list}
-            <RaisedButton
-                onTouchTap={(ev)=>{slide(ev,1)}}
-                style={{...button_style,left:-50+numCols*200}}
-                label='Right'
-                primary={true}
-            />
-        </div>
-    )
-}
-
 class ReactBooking extends React.Component {
     constructor(props){
         super(props)
-
+        const {numCols,cellStyle} = props
         this.state={
-            style:{
-                height: 200,
-                width: 200,
-                margin: 10,
-                textAlign: 'center',
-                display: 'inline-block',
-            },
             shift:0,
             clicked_x: null,
             sliding: false,
             oldShift: 0,
-            grid: [...Array(props.numCols)].map((el,index)=>(
-                index*(210)
+            grid: [...Array(2*numCols-1)].map((el,index)=>(
+                (index-(numCols-1))*(cellStyle.width+cellStyle.margin)
             ))
         }
         this.mouseMove = throttle(100,this.mouseMove)
@@ -97,8 +47,6 @@ class ReactBooking extends React.Component {
     mouseDown(ev){
         ev.persist();
         ev.preventDefault();
-        console.log(ev.target.id)
-        console.log('mousedown')
         this.setState(
             {
                 sliding:true,
@@ -107,8 +55,8 @@ class ReactBooking extends React.Component {
         )
     }
     mouseUp(ev){
-        console.log('mouseup')
         ev.preventDefault();
+
         let old = this.state.shift;
         let min_ind = -1;
         let min = this.state.grid.reduce((acc,val,index,grid)=>{
@@ -117,9 +65,7 @@ class ReactBooking extends React.Component {
                 min_ind = index;
             }
             return acc;
-        },5000)
-
-
+        },Infinity)
 
         this.setState(
             {
@@ -133,8 +79,9 @@ class ReactBooking extends React.Component {
 
     button_slide(ev,direction){
         ev.preventDefault();
+
         this.setState({
-            oldShift: this.state.oldShift + direction*210
+            oldShift: this.state.oldShift + direction*(this.props.cellStyle.width)
         })
     }
     mouseMove(ev){
@@ -146,13 +93,8 @@ class ReactBooking extends React.Component {
             })
         }
     }
-    manager(ev){
-        ev.persist();
-        ev.preventDefault();
-        this.mouseMove(ev);
-    }
+
     touchMove(ev){
-        console.log('touchmove',ev.changedTouches[0].clientX)
         if(this.state.sliding){
             let shift = ev.changedTouches[0].clientX-this.state.clicked_x;
             this.setState({
@@ -161,7 +103,6 @@ class ReactBooking extends React.Component {
         }
     }
     touchDown(ev){
-        console.log('touchdown',ev.changedTouches[0].clientX)
         this.setState(
             {
                 sliding:true,
@@ -170,7 +111,6 @@ class ReactBooking extends React.Component {
         )
     }
     touchEnd(ev){
-        console.log('mouseup')
         ev.preventDefault();
         let old = this.state.shift;
         let min_ind = -1;
@@ -180,10 +120,7 @@ class ReactBooking extends React.Component {
                 min_ind = index;
             }
             return acc;
-        },5000)
-
-
-
+        },Infinity)
         this.setState(
             {
                 sliding:false,
@@ -195,55 +132,141 @@ class ReactBooking extends React.Component {
     }
     render(){
         const {style,shift,sliding} = this.state;
-        const {numCols,zDepth,numRows} = this.props;
-        const list = [...Array(numRows)].map((el,index)=>{
-            const styleRow={
+        const {
+            bookingStyle,
+            cellStyle,
+            buttonStyle,
+            headerStyle,
+            numCols,
+            numRows,
+            zDepth,
+            cellComponent,
+            buttonComponent,
+            dateRange,
+            menuStyle,
+            resources
+        } = this.props;
+
+        const rowList = [...Array(numRows)].map((el,rowIndex)=>{
+            const rowPosition={
                 position:'absolute',
-                top: index*210
+                height:cellStyle.height+cellStyle.margin,
+                top: headerStyle.height+ rowIndex*(cellStyle.height+cellStyle.margin),
             }
-                return(<Row
-                    row={index}
-                    key={index}
-                    styleRow={styleRow}
-                    slide={this.button_slide.bind(this)}
-                    style={this.state.style}
+            return(
+                <Row
+                    buttonComponent={buttonComponent}
+                    cellComponent={cellComponent}
+                    cellStyle={cellStyle}
+                    buttonStyle={buttonStyle}
+                    rowIndex={rowIndex}
+                    rowPosition={rowPosition}
+                    key={rowIndex}
+
                     shift={shift}
                     numCols={numCols}
                     zDepth={zDepth}
                     onMouseDown = {this.mouseDown.bind(this)}
                     oldShift ={this.state.oldShift}
                     onTouchDown = {this.touchDown.bind(this)}
-                />)
+                />
+            )
         })
 
         return(
             <MuiThemeProvider>
-                <div style={{
-                        position:'relative',
-                        display:'flex',
-                        height:'500px',
-                        width:`${210*4+10}px`,
-                        overflowX:'hidden',
-                        overflowY:'scroll'
-                    }}>
-                    {list}
+                <div>
+                    <Resources
+                        resources={resources}
+                        style={menuStyle}
+                        height={cellStyle.height}
+                        margin={cellStyle.margin}
+                        />
+                    <div style={bookingStyle}>
+                        <Header
+                            headerStyle={headerStyle}
+                            buttonComponent={buttonComponent}
+                            buttonStyle={buttonStyle}
+                            slide={this.button_slide.bind(this)}
+                            dateRange={dateRange}
+                            shift={this.state.oldShift}
+                            lifeShift={this.state.shift}
+                            cellStyle={cellStyle}
+                        />
+
+                        {rowList}
+                    </div>
                 </div>
+
+
             </MuiThemeProvider>
         )
     }
 
 
 }
+const BOOKING_WIDTH=1000;
+const BOOKING_HEIGHT=500;
 
 
+const cell_style={
+    height: 80,
+    width: 80,
+    margin: 10,
+    textAlign: 'center',
+    display: 'inline-block',
+}
+const button_style={
+    position: 'absolute',
+    width:50,
+    height:50
+}
+const header_style={
+    width:BOOKING_WIDTH,
+    height: 100,
+}
+
+const menu_style={
+    position: 'fixed',
+    top: header_style.height+cell_style.margin,
+    left: 0,
+    width: 200,
+    margin: 10,
+}
+const booking_style={
+    position:'relative',
+    display:'flex',
+    height:BOOKING_HEIGHT,
+    width:BOOKING_WIDTH,
+    overflowX:'hidden',
+    overflowY:'scroll',
+    left: menu_style.width + menu_style.margin
+}
+
+const resources = [
+    'Sala Norte',
+    "Palacio de Congresos",
+    "Teatro"
+]
 
 const app = document.getElementById('app')
 
+let start_range = moment('01-01-2017',"DD-MM-YYYY",'es');
+let end_range = moment('30-01-2017',"DD-MM-YYYY",'es');
 
 ReactDOM.render(
-   <ReactBooking
-      numCols={4}
-      numRows={5}
-      zDepth={3}
-   />,
+    <ReactBooking
+        bookingStyle={booking_style}
+        cellComponent={({...props})=><Paper {...props}/>}
+        buttonComponent={({...props})=><RaisedButton {...props}/>}
+        cellStyle={cell_style}
+        buttonStyle={button_style}
+        headerStyle={header_style}
+        numCols={15}
+        numRows={3}
+        zDepth={3}
+        dateRange={start_range.twix(end_range)}
+        menuStyle={menu_style}
+        resources={resources}
+    />,
 app);
