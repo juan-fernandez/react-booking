@@ -52,10 +52,10 @@ export default ({...props})=>{
     })
 
    const header_style={
-      
+
    }
    const my_button ={
-      float:'right'
+      float:'right',
    }
     return(
         <div

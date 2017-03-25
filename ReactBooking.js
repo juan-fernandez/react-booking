@@ -185,7 +185,7 @@ class ReactBooking extends React.Component {
 
         return(
             <MuiThemeProvider>
-               <Grid style={container_style}>
+               <div>
                   <Row style={{whiteSpace:'nowrap'}}>
                      <Col style={{overflowX:'hidden',height:buttonStyle.height,padding:'0px'}} xs={8} sm={9} md={10} lg={10} xsOffset={4} smOffset={3} mdOffset={2} lgOffset={2}>
                         <BookingHeader
@@ -208,12 +208,12 @@ class ReactBooking extends React.Component {
                            />
                      </Col>
 
-                     <Col style={{overflow:'hidden',height:`${(cellStyle.height+2*cellStyle.margin)*numRes}px`,padding:'0px'}} xs={8} sm={9} md={10} lg={10}>
+                     <Col style={{overflowX:'hidden',height:`${(cellStyle.height+2*cellStyle.margin)*numRes}px`,padding:'0px'}} xs={8} sm={9} md={10} lg={10}>
                         {rowList}
                      </Col>
 
                   </Row>
-               </Grid>
+               </div>
             </MuiThemeProvider>
         )
     }
@@ -249,9 +249,10 @@ const resources = [
 ]
 
 const container_style = {
-   width: '80%',
-   height: '600px',
-   overflowX: 'hidden'
+   height: '400px',
+   overflowY: 'scroll',
+   overflowX: 'hidden',
+   paddingRight:'20px'
 }
 
 const app = document.getElementById('app')
@@ -260,13 +261,24 @@ let start_range = moment('01-01-2017',"DD-MM-YYYY",'es');
 let end_range = moment('15-01-2017',"DD-MM-YYYY",'es');
 
 ReactDOM.render(
-    <ReactBooking
-        cellComponent={({...props})=><Paper {...props}/>}
-        buttonComponent={({...props})=><RaisedButton {...props}/>}
-        cellStyle={cell_style}
-        buttonStyle={button_style}
-        zDepth={3}
-        dateRange={start_range.twix(end_range)}
-        resources={resources}
-    />,
-app);
+   <Grid>
+      <Row style={{height:'50px'}}>
+         Extra elements
+      </Row>
+      <Row style={container_style}>
+         <ReactBooking
+             cellComponent={({...props})=><Paper {...props}/>}
+             buttonComponent={({...props})=><RaisedButton {...props}/>}
+             cellStyle={cell_style}
+             buttonStyle={button_style}
+             zDepth={3}
+             dateRange={start_range.twix(end_range)}
+             resources={resources}
+         />
+      </Row>
+      <Row style={{height:'50px'}}>
+         Extra elements
+      </Row>
+   </Grid>
+
+,app);
