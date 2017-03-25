@@ -11,7 +11,8 @@ export default ({...props})=>{
      zDepth,
      onMouseDown,
      oldShift,
-     onTouchDown
+     onTouchDown,
+
    } = props;
 
 
@@ -37,7 +38,8 @@ export default ({...props})=>{
                 {
                     display:'inline-block',
                     position: 'absolute',
-                    left:shift+oldShift
+                    left:shift+oldShift,
+                    top: `${rowIndex*(cellStyle.height+cellStyle.margin)}px`
                 }
             }>
             {listCells}

@@ -149,7 +149,7 @@ class ReactBooking extends React.Component {
         } = this.props;
         let numDays = dateRange.count('days')
         let numRes = resources.length;
-        numRes = 1;
+
         const rowList = [...Array(numRes)].map((el,rowIndex)=>{
 
             return(
@@ -228,9 +228,9 @@ const resources = [
     'Sala Sur',
     "Sala de comunicación",
     "Aula Magna",
-     'Sala Oeste',
-     "Cabinete",
-     "Exterior",
+    'Sala Oeste',
+    "Cabinete",
+    "Exterior",
 ]
 
 const container_style = {
