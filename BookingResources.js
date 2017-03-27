@@ -13,7 +13,8 @@ export default ({...props})=>{
         marginLeft: itemStyle.margin,
         marginTop: itemStyle.margin,
         backgroundColor: '#1A237E',
-        color: '#E8EAF6'
+        color: '#E8EAF6',
+        fontSize: '1.1em'
     }
 
     const listItems = resources.map((element,index)=>(
