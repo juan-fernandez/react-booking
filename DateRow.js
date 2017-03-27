@@ -24,7 +24,7 @@ export default ({...props})=>{
        let positioned_cell_style = {
            ...cellStyle,
            cursor:'pointer',
-           backgroundColor: selected_cell ? '#9E9E9E':'white'
+           backgroundColor: selected_cell ? '#3F51B5':(index%2 ? '#C5CAE9':'#E8EAF6')
        }
        return(
               cellComponent({
@@ -45,7 +45,7 @@ export default ({...props})=>{
                     display:'inline-block',
                     position: 'absolute',
                     left:shift+oldShift,
-                    top: `${rowIndex*(cellStyle.height+cellStyle.margin)}px`
+                    top: `${rowIndex*(cellStyle.height+2*cellStyle.margin)}px`
                 }
             }>
             {listCells}

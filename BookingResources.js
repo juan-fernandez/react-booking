@@ -5,8 +5,15 @@ export default ({...props})=>{
     const {resources, itemStyle} = props;
     const paper_style={
         width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         height: itemStyle.height,
-        margin: itemStyle.margin
+        marginBottom: 2*itemStyle.margin,
+        marginLeft: itemStyle.margin,
+        marginTop: itemStyle.margin,
+        backgroundColor: '#1A237E',
+        color: '#E8EAF6'
     }
 
     const listItems = resources.map((element,index)=>(

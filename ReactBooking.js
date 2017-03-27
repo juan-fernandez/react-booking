@@ -39,12 +39,12 @@ class ReactBooking extends React.Component {
             sliding: false,
             oldShift: 0,
             grid: [...Array(2*numCols-1)].map((el,index)=>(
-                (index-(numCols-1))*(cellStyle.width+cellStyle.margin)
+                (index-(numCols-1))*(cellStyle.width+2*cellStyle.margin)
             )),
             selected:[]
         }
-        this.mouseMove = throttle(100,this.mouseMove)
-        this.touchMove = throttle(100,this.touchMove)
+        this.mouseMove = throttle(50,this.mouseMove)
+        this.touchMove = throttle(50,this.touchMove)
         window.addEventListener('mouseup',this.mouseUp.bind(this))
         window.addEventListener('mousemove',this.mouseMove.bind(this))
         window.addEventListener('touchmove',this.touchMove.bind(this))
@@ -208,7 +208,7 @@ class ReactBooking extends React.Component {
                            />
                      </Col>
 
-                     <Col style={{overflowX:'hidden',height:`${(cellStyle.height+2*cellStyle.margin)*numRes}px`,padding:'0px'}} xs={8} sm={9} md={10} lg={10}>
+                     <Col style={{overflowX:'hidden',height:`${(cellStyle.height+2*cellStyle.margin)*numRes+cellStyle.margin}px`,padding:'0px'}} xs={8} sm={9} md={10} lg={10}>
                         {rowList}
                      </Col>
 
@@ -225,14 +225,14 @@ class ReactBooking extends React.Component {
 const cell_style={
     height: 80,
     width: 80,
-    margin: 10,
+    margin: 5,
     textAlign: 'center',
     display: 'inline-block',
 }
 const button_style={
     width:50,
     height:50,
-    display: 'inline-block',
+    display: 'inline-block'
 }
 
 

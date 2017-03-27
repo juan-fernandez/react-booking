@@ -64,9 +64,10 @@ export default ({...props})=>{
             {buttonComponent(
             {
                 onTouchTap:(ev)=> slide(ev,1),
+                backgroundColor:"#3949AB",
                 style:{...buttonStyle},
-                icon:<Left/>,
-                primary:true
+                icon:<Left color={'white'}/>,
+
             })}
             <div style={{display:'inline-block',position:'absolute',left:shift+lifeShift}}>
                {dateList}
@@ -75,9 +76,10 @@ export default ({...props})=>{
             {buttonComponent(
             {
                 onTouchTap:(ev)=> slide(ev,-1),
+                backgroundColor:"#3949AB",
                 style:{...buttonStyle,...my_button},
-                icon:<Right/>,
-                primary:true
+                icon:<Right color={'white'}/>,
+
             })}
         </div>
     )
