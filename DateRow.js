@@ -1,4 +1,5 @@
 import React from 'react'
+import Add from 'material-ui/svg-icons/content/add';
 
 export default ({...props})=>{
    const {
@@ -24,7 +25,8 @@ export default ({...props})=>{
        let positioned_cell_style = {
            ...cellStyle,
            cursor:'pointer',
-           backgroundColor: selected_cell ? '#3F51B5':(index%2 ? '#C5CAE9':'#E8EAF6')
+           backgroundColor: selected_cell ? '#3F51B5':(index%2 ? '#C5CAE9':'#E8EAF6'),
+           paddingTop:`${cellStyle.height/3}px`
        }
        return(
               cellComponent({

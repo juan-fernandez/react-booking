@@ -11,15 +11,19 @@ const Date = ({...props})=>{
         display:'inline-block',
         height,
         width,
-        margin:`0 ${margin}px`,
-        lineHeight:`${height}px`,
+        margin:`0px ${margin}px`,
+        //lineHeight:`${height}px`,
+        textAlign:'center',
+        backgroundColor:'#5C6BC0',
+        paddingTop:'5px',
+        color: '#E8EAF6'
     }
     return(
         <Paper
             style={date_style}
             >
-            {date.format('ddd')}
-            {date.format('DD')}
+            {date.format('dddd')}<br/>
+            {date.format('MMM Do')}
         </Paper>
     )
 }
